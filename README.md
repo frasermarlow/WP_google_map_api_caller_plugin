@@ -8,7 +8,7 @@ You can install this plugin as-is, and then modify it on your Wordpress instance
 
 ## So what does it do exactly?
 This plugin will call an API endpoint (using your API key for credentials) and retrieve a json payload for marker and Polyline data.
-It will then manipulate that json data into a format that can be imported by WP Google Maps. ***Since all API data is structured differently, you will need to write this transformation nscript yourself in the 'glitter_merge_data.php' file*** (which is just one function called ***glitter_merge_data()***).
+It will then manipulate that json data into a format that can be imported by WP Google Maps. ***Since all API data is structured differently, you will need to write this transformation script yourself in the 'glitter_merge_data.php' file*** (which is just one function called ***glitter_merge_data()***).
 
 ## Configuration options
 This plugin includes a Wordpress Admin page for setting the following options:
@@ -19,4 +19,4 @@ This plugin includes a Wordpress Admin page for setting the following options:
 - ***Save location*** - this is the location where you will save the finished merged .json file.  This is the URL you will enter in the WP Google Map scheduled import.
 
 ## So what's with all this Glitter stuff?
-The organization I built this plugin for is called Glitter.  [https://getglitterapp.com](Check them out).
+The organization I built this plugin for is called Glitter. [Check them out](https://getglitterapp.com).
