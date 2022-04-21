@@ -14,7 +14,8 @@ You can install this plugin as-is, and then modify it on your Wordpress instance
 This plugin includes a Wordpress Admin page for setting the following options:
 - ***update frequency*** (based on the default Wordpress cron update frequencies, but also accomodates custom frequencies, and provides two examples for this)
 - ***API Key***
-- ***API endpoint*** (note the code allows for an additional 'resource' add to the URI as many APIs will include something like GET https://myapi.endpoint.com/v2/clients or https://myapi.endpoint.com/v2/orders - so you may need to change the resource.  In this instance we used the 'deals' endpoint.
+- ***API endpoint***  Your source application's API endpoint (minus any 'resource' extentions - see below)
+-  ***API resource*** additional 'resource' add to the URI as many APIs will include something like GET https://myapi.endpoint.com/v2/*clients* or https://myapi.endpoint.com/v2/*orders*.  (Note: this set up is to allow for multiple resource calls in the future).
 - ***Map JSON template*** - this is the name of the file that you use as a template for the map, to which you will add the variable data from the API.  The best way to generate this template is to set up your map in WP Google Map and then export it to a .json file.
 - ***Save location*** - this is the location where you will save the finished merged .json file.  This is the URL you will enter in the WP Google Map scheduled import.
 
