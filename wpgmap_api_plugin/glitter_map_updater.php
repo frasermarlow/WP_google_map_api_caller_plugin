@@ -107,17 +107,21 @@ function glitter_map_json_base_input() {
 }
 
 function glitter_map_json_export_file_input() {
-	# get_option( string $option, mixed $default = false )
-	$options = get_option('glitter_map_json_export_file');
-	$export_file_url = get_site_url() . "/" . $options;
 	echo "<p>Where to save the .json file that the Google Map app will import.</p>\n";
-	echo "<p>Currently: <a href='" . $export_file_url . "' target='_new'>" . $export_file_url . "</a></p><br/>\n";
+
+	if(strlen(get_option('glitter_map_json_export_file')) > 0){
+		$options = get_option('glitter_map_json_export_file');
+		$export_file_url = get_site_url() . "/" . $options;
+		echo "<p>Currently: <a href='" . $export_file_url . "' target='_new'>" . $export_file_url . "</a></p><br/>\n";
+	} else {
+		$options = "";
+	}
 	echo "<input id='plugin_text_string' name='glitter_map_json_export_file' size='80' type='text' value='{$options}' />";
 }
 
 function g_map_render_admin_page(){
 	$output = "<img src='http://staging-getglitterapp.kinsta.cloud/wp-content/uploads/2022/04/trash_globe.gif' height='180px' style='float:right; margin: 40px 20% 0 0;'>";
-	$output .="<div class='wrap'>\n<h1>Glitter Map Updater</h1>\n<h3>" . get_plugin_data(__FILE__)['Version'] . " by " . get_plugin_data(__FILE__)['Author'] . "</h3>\n<p>This plugin calls the ActiveCampaign API and pulls in the data required to update the map.<br/>\n";
+	$output .="<div class='wrap'>\n<h1>Glitter Map Updater</h1>\n<h3>V" . get_plugin_data(__FILE__)['Version'] . " by " . get_plugin_data(__FILE__)['Author'] . "</h3>\n<p>This plugin calls the ActiveCampaign API and pulls in the data required to update the map.<br/>\n";
 	$output .= "There are currently " . get_option('map_block_count') . " blocks on the map.  |  Last updated at " . get_option('map_last_updated_at') . " " . date_default_timezone_get() . "</p>";
 	$output .= "<form method='post' action='options.php'>\n";
 	echo $output;
