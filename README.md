@@ -4,7 +4,11 @@ A Wordpress plugin to complement [WP Google Maps](https://www.wpgmaps.com/), pro
 ## How this plugin works
 
 ## How to install
-In the Github repo you will find the source files along with a .zip file.  Download the Zip file, then go to your wordpress Admain section > Plugins.  Select 'Install new' then click 'upload'.  Upload the Zip file, then on the P{lugin page, click 'Activate'.  
+You can install this plugin as-is, and then modify it on your Wordpress instance post-install.  In the Github repo you will find the source files along with a .zip file.  Download the Zip file, then go to your wordpress Admain section > Plugins.  Select 'Install new' then click 'upload'.  Upload the Zip file, then on the Plugin page, click 'Activate'.
+
+## So what does it do exactly?
+This plugin will call an API endpoint (using your API key for credentials) and retrieve a json payload for marker and Polyline data.
+It will then manipulate that json data into a format that can be imported by WP Google Maps. ***Since all API data is structured differently, you will need to write this transformation nscript yourself in the 'glitter_merge_data.php' file*** (which is just one function called ***glitter_merge_data()***).
 
 ## Configuration options
 This plugin includes a Wordpress Admin page for setting the following options:
@@ -13,3 +17,6 @@ This plugin includes a Wordpress Admin page for setting the following options:
 - ***API endpoint*** (note the code allows for an additional 'resource' add to the URI as many APIs will include something like GET https://myapi.endpoint.com/v2/clients or https://myapi.endpoint.com/v2/orders - so you may need to change the resource.  In this instance we used the 'deals' endpoint.
 - ***Map JSON template*** - this is the name of the file that you use as a template for the map, to which you will add the variable data from the API.  The best way to generate this template is to set up your map in WP Google Map and then export it to a .json file.
 - ***Save location*** - this is the location where you will save the finished merged .json file.  This is the URL you will enter in the WP Google Map scheduled import.
+
+## So what's with all this Glitter stuff?
+The organization I built this plugin for is called Glitter.  [https://getglitterapp.com](Check them out).
