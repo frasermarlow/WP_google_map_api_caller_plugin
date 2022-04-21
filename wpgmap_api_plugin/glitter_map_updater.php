@@ -35,6 +35,7 @@ if (!function_exists('register_glitter_map_settings')) {
 		# register_setting( string $option_group, string $option_name, array $args = array() )
 		register_setting( 'map-updater', 'glitter_map_api');
 		register_setting( 'map-updater', 'glitter_map_api_endpoint');
+		register_setting( 'map-updater', 'glitter_map_api_resource');
 		register_setting( 'map-updater', 'glitter_map_update_frequency');
 		register_setting( 'map-updater', 'glitter_map_json_base');
 		register_setting( 'map-updater', 'glitter_map_json_export_file');
@@ -47,7 +48,7 @@ if (!function_exists('register_glitter_map_settings')) {
 
 		add_settings_field('glitter_map_update_frequency_field', 'Update frequency', 'glitter_map_update_frequency_input', 'map-updater', 'glitter_map_admin_page_section1');
 		add_settings_field('glitter_map_api_field', 'ActiveCampaign API key', 'glitter_map_api_input', 'map-updater', 'glitter_map_admin_page_section2');
-		add_settings_field('glitter_map_api_endpoint_field', 'API endpoint', 'glitter_map_api_endpoint_input', 'map-updater', 'glitter_map_admin_page_section2');
+		add_settings_field('glitter_map_api_endpoint_field', 'API endpoint', 'glitter_map_api_endpoint_input', 'map-updater', 'glitter_map_admin_page_section2');		add_settings_field('glitter_map_api_resource_field', 'API resource', 'glitter_map_api_resource_input', 'map-updater', 'glitter_map_admin_page_section2');
 		add_settings_field('glitter_map_json_base_field', 'Map JSON template', 'glitter_map_json_base_input', 'map-updater', 'glitter_map_admin_page_section2');
 		add_settings_field('glitter_map_json_export_file_field', 'Where to save the export file', 'glitter_map_json_export_file_input', 'map-updater', 'glitter_map_admin_page_section2');		
 	}
@@ -94,8 +95,14 @@ function glitter_map_api_input() {
 function glitter_map_api_endpoint_input() {
 	# get_option( string $option, mixed $default = false )
 	$options = get_option('glitter_map_api_endpoint');
-	echo "<p>Note, the API endpoint may have a 'resource' value - do not include this in the URI.</p>\n<br/>\n";
+	echo "<p>Note, the API endpoint may have a 'resource' value (like 'clients' or 'orders') - do not include this in the URI.</p>\n<br/>\n";
 	echo "<input id='plugin_text_string' name='glitter_map_api_endpoint' size='80' type='text' value='{$options}' />";
+}
+
+function glitter_map_api_resource_input() {
+	# get_option( string $option, mixed $default = false )
+	$options = get_option('glitter_map_api_resource');
+	echo "<input id='plugin_text_string' name='glitter_map_api_resource' size='80' type='text' value='{$options}' />";
 }
 
 function glitter_map_json_base_input() {
@@ -214,7 +221,7 @@ function glitter_update_map_json(){
 	$map = new GlitterMapWidget();
 	
 	// merge the two data sources
-	$map_data = glitter_merge_sources($map_data, $map->call_api('deals'));
+	$map_data = glitter_merge_data($map_data, $map->call_api(get_option('glitter_map_api_resource')));
 	
 	
 	// finally, save the file and update the 'last updated' timestamp.
