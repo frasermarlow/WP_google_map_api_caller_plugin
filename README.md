@@ -1,6 +1,8 @@
 # WP_google_map_api_caller_plugin
 A Wordpress plugin to complement [WP Google Maps](https://www.wpgmaps.com/), providing an API calling function.  This example was built to call the ActiveCampaign API but is configurable enough to serve as a starting point for any API call.
 
+Note that this is not provided as a plug-and-play ready-to-use plugin, but rather as starting point that should save you a ton of time if you are looking to schedule updates to a WP Google Maps map based on an API call. 
+
 ## How this plugin works
 This plugin will call an API endpoint you specify (using your API key for credentials) and retrieve a json payload for Map Marker and Polyline data.
 It will then manipulate that json data into a format that can be imported by WP Google Maps. ***Since all API data is structured differently, you will need to write this transformation script yourself in the 'glitter_merge_data.php' file*** (which is just one function called ***glitter_merge_data()***).
