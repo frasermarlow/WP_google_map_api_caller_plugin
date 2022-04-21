@@ -3,7 +3,7 @@ A Wordpress plugin to complement [WP Google Maps](https://www.wpgmaps.com/), pro
 
 Note that this is not provided as a plug-and-play ready-to-use plugin, but rather as starting point that should save you a ton of time if you are looking to schedule updates to a WP Google Maps map based on an API call.
 
-This plugin was developed in combination with WP Google Maps - Pro Add-on Version: 8.1.20, but this said there are no code dependencies between the packages so you should be fine on any version of the WP Goolg eMaps plugin as long as you can use the schedule option under 'Import Data'.
+This plugin was developed in combination with WP Google Maps - Pro Add-on Version: 8.1.20, but this said there are no code dependencies between this plugin and the WP Google Maps plugin so you should be fine on any version of the WP Google Maps plugin as long as you can use the schedule option under 'Import Data'.
 
 ## How this plugin works
 This plugin will call an API endpoint you specify (using your API key for credentials) and retrieve a json payload for Map Marker and Polyline data.
