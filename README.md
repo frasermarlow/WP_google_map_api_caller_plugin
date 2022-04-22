@@ -13,7 +13,7 @@ Once you have the .json export file in place, just point the WP Google Maps impo
 ## How to install
 You can install this plugin as-is, and then modify it on your Wordpress instance post-install.
 
-In the Github repo you will find the source files along with [a .zip file](https://github.com/frasermarlow/WP_google_map_api_caller_plugin/blob/main/wpgmap_api_plugin.zip).  Download the Zip file, then go to your wordpress Admain section > Plugins.  Select 'Install new' then click 'upload'.  Upload the Zip file, then on the Plugin page, click 'Activate'.
+In the Github repo you will find the source files along with [a .zip file](https://github.com/frasermarlow/WP_google_map_api_caller_plugin/blob/main/wpgmap_api_plugin.zip).  Download the Zip file, then go to your wordpress Admin section > Plugins.  Select 'Install new' then click 'upload'.  Upload the Zip file, then on the Plugin page, click 'Activate'.
 
 ## Configuration options
 This plugin includes a Wordpress Admin page for setting the following options:
