@@ -93,20 +93,20 @@ function glitter_map_api_input() {
 }
 
 function glitter_map_api_endpoint_input() {
-	# get_option( string $option, mixed $default = false )
+	// get_option( string $option, mixed $default = false )
 	$options = get_option('glitter_map_api_endpoint');
 	echo "<p>Note, the API endpoint may have a 'resource' value (like 'clients' or 'orders') - do not include this in the URI.</p>\n<br/>\n";
 	echo "<input id='plugin_text_string' name='glitter_map_api_endpoint' size='80' type='text' value='{$options}' />";
 }
 
 function glitter_map_api_resource_input() {
-	# get_option( string $option, mixed $default = false )
+	// get_option( string $option, mixed $default = false )
 	$options = get_option('glitter_map_api_resource');
 	echo "<input id='plugin_text_string' name='glitter_map_api_resource' size='80' type='text' value='{$options}' />";
 }
 
 function glitter_map_json_base_input() {
-	# get_option( string $option, mixed $default = false )
+	// get_option( string $option, mixed $default = false )
 	$options = get_option('glitter_map_json_base');
 	$thisdirectory = __DIR__;
 	echo "<p>The name of the .json file that the plugin will augment with imported fields from ActiveCampaign</p><p>This file has to sit in the folder of the plugin - namely <em>{$thisdirectory}</em>.</p>\n<br/>\n";
@@ -141,10 +141,12 @@ function g_map_render_admin_page(){
 
 //  Main plugin functions ----------------------------------------------------------------------------
 
-class GlitterMapWidget {
+class GlitterMapObject {
 	
   private $api_key;
   private $api_endpoint;
+	private $limit;  // TODO:  Build pagination logic past 100 accounts
+	private $offset;
 	
   function __construct() {
     $this->api_endpoint = get_option('glitter_map_api_endpoint');  # Note: our API call has an extra endpoint variable called 'resource'
@@ -155,7 +157,7 @@ class GlitterMapWidget {
   public function call_api($resource) {
 
     $curl = curl_init();
-    $url = $this->api_endpoint . $resource;  # here we append the 'resource' extention to the endpoint.  This allows the API to be extensible
+    $url = $this->api_endpoint . $resource . "?limit=100";  # here we append the 'resource' extension to the endpoint.  This allows the API to be extensible
     
     curl_setopt_array($curl, array(
       CURLOPT_URL => $url,
@@ -189,11 +191,13 @@ class GlitterMapWidget {
 //  outside of Class function call:
 if (!function_exists('glitter_update_map_json')) {
 function glitter_update_map_json(){
+
+    // grab our 'base' map, or template we will augment with the data from the API call.
 	$base_map_data = file_get_contents(__DIR__ . '/' . get_option('glitter_map_json_base'));
 	$map_data = json_decode($base_map_data,true);
-	$map = new GlitterMapWidget();
+	$map = new GlitterMapObject();
 	
-	// merge the two data sources
+	// merge the two data sources - this will be a custom function you will design to parse and organize your imported data.
 	$map_data = glitter_merge_data($map_data, $map->call_api(get_option('glitter_map_api_resource')));
 	
 	// finally, save the file and update the 'last updated' timestamp.
@@ -205,7 +209,6 @@ function glitter_update_map_json(){
 	
 	}
 }
-
 
 // # SCHEDULING -----------------------------------------------------------
 
@@ -264,6 +267,14 @@ function cronstarter_deactivate() {
 } 
 
 // HOOKS ------------------------------------------------------------------------------------------
+
+// Create a [glitter_map_api_test] shortcode we can add to a test page
+
+function register_shortcodes(){
+   add_shortcode('glitter_map_api_test', 'glitter_update_map_json');
+}
+add_action( 'init', 'register_shortcodes');
+
 
 // and make sure it's called whenever WordPress loads
 add_action('wp', 'cronstarter_activation');
