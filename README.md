@@ -7,7 +7,7 @@ This plugin was developed in combination with WP Google Maps - Pro Add-on Versio
 
 ## How this plugin works
 This plugin will call an API endpoint you specify (using your API key for credentials) and retrieve a json payload for Map Marker and Polyline data.
-It will then manipulate that json data into a format that can be imported by WP Google Maps. ***Since all API data is structured differently, you will need to write this transformation script yourself in the 'glitter_merge_data.php' file*** (which is just one function called ***glitter_merge_data()***).
+It will then manipulate that json data into a format that can be imported by WP Google Maps. ***Since all API data is structured differently, you will need to write this transformation script yourself in the 'glitter_merge_data.php' file*** (This .php file contains just one function called ***glitter_merge_data()*** along with a custom shortcode that may come in handy).
 Once you have the .json export file in place, just point the WP Google Maps importer (Maps > Advanced > Import Data) to the file url.  Use 'import via url' and set it on a schedule.  And yes, you will be importing a file off the same server that hosts the Maps plugin...
 
 ## How to install
@@ -23,6 +23,9 @@ This plugin includes a Wordpress Admin page for setting the following options:
 -  ***API resource*** additional 'resource' add to the URI as many APIs will include something like GET https://myapi.endpoint.com/v2/*clients* or https://myapi.endpoint.com/v2/*orders*.  (Note: this set up is to allow for multiple resource calls in the future).
 - ***Map JSON template*** - this is the name of the file that you use as a template for the map, to which you will add the variable data from the API.  The best way to generate this template is to set up your map in WP Google Map and then export it to a .json file.
 - ***Save location*** - this is the location where you will save the finished merged .json file.  This is the URL you will enter in the WP Google Map scheduled import.
+
+## TODO as of 5/8/2022
+Need to build in pagination.
 
 ## So what's with all this Glitter stuff?
 The organization I built this plugin for is called Glitter. [Check them out](https://getglitterapp.com).
