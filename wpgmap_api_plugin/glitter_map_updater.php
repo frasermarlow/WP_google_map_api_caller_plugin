@@ -1,7 +1,7 @@
 <?php
 /**
 Plugin Name:  Glitter Map Updater
-Description:  Pulls data from an API endpoint and reformats it as a .json file that the WP Google Map plugin can import.  This version created April 21 2022.
+Description:  Pulls data from ActiveCampaign and reformats it as a .json file that the WP Google Map plugin can ingest.  This version created April 21 2022.
 Version:      1.3
 Author:       Fraser Marlow
 */
@@ -14,7 +14,7 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-// ADMIN PAGE SETUP ------------------------------------------------
+// ADMIN
 
 // Add menu item on the Wordpress Admin page
 if ( is_admin() ){ // admin actions (functions that get called)
@@ -36,9 +36,11 @@ if (!function_exists('register_glitter_map_settings')) {
 		register_setting( 'map-updater', 'glitter_map_api');
 		register_setting( 'map-updater', 'glitter_map_api_endpoint');
 		register_setting( 'map-updater', 'glitter_map_api_resource');
+		register_setting( 'map-updater', 'glitter_map_api_pagination');
 		register_setting( 'map-updater', 'glitter_map_update_frequency');
 		register_setting( 'map-updater', 'glitter_map_json_base');
 		register_setting( 'map-updater', 'glitter_map_json_export_file');
+	
 		add_option('map_last_updated_at'); # note, this will only have effect the very first time you install the plugin.
 
 		# add_settings_section( string $id, string $title, callable $callback, string $page )
@@ -48,17 +50,19 @@ if (!function_exists('register_glitter_map_settings')) {
 		# add_settings_field( string $id, string $title, callable $callback, string $page, string $section = 'default', array $args = array() )
 		add_settings_field('glitter_map_update_frequency_field', 'Update frequency', 'glitter_map_update_frequency_input', 'map-updater', 'glitter_map_admin_page_section1');
 		add_settings_field('glitter_map_api_field', 'ActiveCampaign API key', 'glitter_map_api_input', 'map-updater', 'glitter_map_admin_page_section2');
-		add_settings_field('glitter_map_api_endpoint_field', 'API endpoint', 'glitter_map_api_endpoint_input', 'map-updater', 'glitter_map_admin_page_section2');		add_settings_field('glitter_map_api_resource_field', 'API resource', 'glitter_map_api_resource_input', 'map-updater', 'glitter_map_admin_page_section2');
+		add_settings_field('glitter_map_api_endpoint_field', 'API endpoint', 'glitter_map_api_endpoint_input', 'map-updater', 'glitter_map_admin_page_section2');
+		add_settings_field('glitter_map_api_pagination_field', 'Set pagination number (default is 20, max is 100)', 'glitter_map_api_pagination_input', 'map-updater', 'glitter_map_admin_page_section2');
+		add_settings_field('glitter_map_api_resource_field', 'API resource', 'glitter_map_api_resource_input', 'map-updater', 'glitter_map_admin_page_section2');
 		add_settings_field('glitter_map_json_base_field', 'Map JSON template', 'glitter_map_json_base_input', 'map-updater', 'glitter_map_admin_page_section2');
-		add_settings_field('glitter_map_json_export_file_field', 'Where to save the export file', 'glitter_map_json_export_file_input', 'map-updater', 'glitter_map_admin_page_section2');		
+		add_settings_field('glitter_map_json_export_file_field', 'Where to save the export file', 'glitter_map_json_export_file_input', 'map-updater', 'glitter_map_admin_page_section2');
+
 	}
 }
 
 function render_plugin_section_text1() {
+	// echo '<p>Main description of this section here.</p>';
 	echo "Please provide the following values:";
 }
-
-// Admin page input fields ------------------------------------------
 
 function glitter_map_update_frequency_input() {
 	$available_schedules = wp_get_schedules();
@@ -67,43 +71,41 @@ function glitter_map_update_frequency_input() {
 	echo "<p style='font-size:small; color:#aaa;'>Note: the higher frequency will mean more calls to the API endpoint (your source).  It will not impact the number of calls to the Google Maps API, which is based on page views of your map.</p>\n<br/>\n";
 	?>
 	<label for="cron_frequencies">Set the update frequency:</label>
-  	<select id="cron_frequencies" name="glitter_map_update_frequency">
+  <select id="cron_frequencies" name="glitter_map_update_frequency">
 	<?php
 	foreach( $available_schedules as $k=>$v) {
 		$schedule_dropdown = "<option value='{$k}' "; 
 		$schedule_dropdown .= $freq==$k?'selected':'';
 		$schedule_dropdown .= ">{$v['display']}</option>";
 		echo $schedule_dropdown;
-	}  ?>
- 	</select>
+	}
+
+	?>
+  </select>
 	<hr style="margin:30px 0"/>
 	<?php
 }
 
 function render_plugin_section_text2() {
+	// echo '<p>Main description of this section here.</p>';
 	echo "Admin settings (please don't change unless you know what you are doing!):";
 }
 
 function glitter_map_api_input() {
+	# get_option( string $option, mixed $default = false )
 	$options = get_option('glitter_map_api');
 	echo "<input id='plugin_text_string' name='glitter_map_api' size='80' type='text' value='{$options}' />";
 }
 
 function glitter_map_api_endpoint_input() {
-<<<<<<< HEAD
 	// get_option( string $option, mixed $default = false )
-=======
->>>>>>> 710539c93bcdfd992d140bac1f8ba4243760ee07
 	$options = get_option('glitter_map_api_endpoint');
 	echo "<p>Note, the API endpoint may have a 'resource' value (like 'clients' or 'orders') - do not include this in the URI.</p>\n<br/>\n";
 	echo "<input id='plugin_text_string' name='glitter_map_api_endpoint' size='80' type='text' value='{$options}' />";
 }
 
 function glitter_map_api_resource_input() {
-<<<<<<< HEAD
 	// get_option( string $option, mixed $default = false )
-=======
->>>>>>> 710539c93bcdfd992d140bac1f8ba4243760ee07
 	$options = get_option('glitter_map_api_resource');
 	echo "<input id='plugin_text_string' name='glitter_map_api_resource' size='80' type='text' value='{$options}' />";
 }
@@ -116,8 +118,15 @@ function glitter_map_json_base_input() {
 	echo "<input id='plugin_text_string' name='glitter_map_json_base' size='80' type='text' value='{$options}' />";
 }
 
+function glitter_map_api_pagination_input() {
+	// get_option( string $option, mixed $default = false )
+	$options = get_option('glitter_map_api_pagination');
+	echo "<input id='plugin_text_string' name='glitter_map_api_pagination' size='80' type='number' min='20' max='100' value='{$options}' />";
+}
+
 function glitter_map_json_export_file_input() {
 	echo "<p>Where to save the .json file that the Google Map app will import.</p>\n";
+
 	if(strlen(get_option('glitter_map_json_export_file')) > 0){
 		$options = get_option('glitter_map_json_export_file');
 		$export_file_url = get_site_url() . "/" . $options;
@@ -129,12 +138,12 @@ function glitter_map_json_export_file_input() {
 }
 
 function g_map_render_admin_page(){
-	$output = "<img src='http://staging-getglitterapp.kinsta.cloud/wp-content/uploads/2022/04/trash_globe.gif' height='180px' style='float:right; margin: 40px 20% 0 0;'>";
+	$output = "<img src='https://getglitterapp.com/wp-content/uploads/2022/04/trash_globe.gif' height='180px' style='float:right; margin: 40px 20% 0 0;'>";
 	$output .="<div class='wrap'>\n<h1>Glitter Map Updater</h1>\n<h3>V" . get_plugin_data(__FILE__)['Version'] . " by " . get_plugin_data(__FILE__)['Author'] . "</h3>\n<p>This plugin calls the ActiveCampaign API and pulls in the data required to update the map.<br/>\n";
 	$output .= "There are currently " . get_option('map_block_count') . " blocks on the map.  |  Last updated at " . get_option('map_last_updated_at') . " " . date_default_timezone_get() . "</p>";
 	$output .= "<form method='post' action='options.php'>\n";
 	echo $output;
-	settings_fields( 'map-updater' );
+	settings_fields( 'map-updater' ); # Docs say this should match the group name used in register_setting(), but actually should match the page
 	do_settings_sections( 'map-updater' );
 	submit_button();
 	$output ="</form>\n</div>";
@@ -147,48 +156,75 @@ class GlitterMapObject {
 	
   private $api_key;
   private $api_endpoint;
-	private $limit;  // TODO:  Build pagination logic past 100 accounts
 	private $offset;
+	private $pagination;
 	
   function __construct() {
     $this->api_endpoint = get_option('glitter_map_api_endpoint');  # Note: our API call has an extra endpoint variable called 'resource'
     $this->api_key = get_option('glitter_map_api');
+		$this->offset = 0;
+		$this->pagination = (int) get_option('glitter_map_api_pagination');
   }
 
   //// Creating widget front-end view
-  public function call_api($resource) {
+  public function call_api($resource, $paginate = false) {
+		$i = 0;
+		$all_response_objects = array();
+		$pagination_loop = true;
+		
+		while($pagination_loop){
+				$curl = curl_init();
+				$url = $this->api_endpoint . $resource; # here we append the 'resource' extension to the endpoint.  This allows the API to be extensible
+				if($paginate){
+					$url .= "?limit=" . $this->pagination . "&offset=" .  $this->offset;
+				}
+				//echo "URL: " . $url . "<br>\n";
+				
+				curl_setopt_array($curl, array(
+						CURLOPT_URL => $url,
+						CURLOPT_RETURNTRANSFER => true,
+						CURLOPT_FOLLOWLOCATION => true,
+						CURLOPT_ENCODING => "",
+						CURLOPT_MAXREDIRS => 10,
+						CURLOPT_TIMEOUT => 30,
+						CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+						CURLOPT_CUSTOMREQUEST => "GET",
+						CURLOPT_HTTPHEADER => array(
+							"Api-Token: ". $this->api_key
+						),
+					)
+				);
+			
+				$response = curl_exec($curl);
+				$err = curl_error($curl);
+				curl_close($curl);
+				
+				if ($err) {
+					update_option('map_last_updated_at', "cURL Error #:" . $err);
+					$pagination_loop = false;
+				} else {
+					//The API returns data in JSON format, so first convert that to an array of data objects
+					$responseObj = json_decode($response);
+					$all_response_objects[] = $responseObj;
 
-    $curl = curl_init();
-    $url = $this->api_endpoint . $resource . "?limit=100";  # here we append the 'resource' extension to the endpoint.  This allows the API to be extensible
-    
-    curl_setopt_array($curl, array(
-      CURLOPT_URL => $url,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_ENCODING => "",
-      CURLOPT_MAXREDIRS => 10,
-      CURLOPT_TIMEOUT => 30,
-      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => "GET",
-      CURLOPT_HTTPHEADER => array(
-        "Api-Token: ". $this->api_key
-      ),
-    ));
-  
-    $response = curl_exec($curl);
-    $err = curl_error($curl);
-    curl_close($curl);
-  
-    if ($err) {
-      // Only show errors while testing
-      // echo "cURL Error #:" . $err;
-    } else {
-      //The API returns data in JSON format, so first convert that to an array of data objects
-      $responseObj = json_decode($response);
-      return (array) $responseObj;
-    }
-  } // end public function 'call_api()'
-	
+					if($paginate){
+							if(count($responseObj->$resource) == 0){
+								$pagination_loop = false;
+							} else {
+								$this->offset += $this->pagination;
+							}
+					}else{
+						$pagination_loop = false;
+					}
+				
+				update_option('map_last_updated_at', date("F j Y g:i a"));
+				
+				}
+		}
+						
+		return $all_response_objects;
+		
+  } // end public function widget
 } // Class glitter_map_widget ends here
 
 //  outside of Class function call:
@@ -201,13 +237,15 @@ function glitter_update_map_json(){
 	$map = new GlitterMapObject();
 	
 	// merge the two data sources - this will be a custom function you will design to parse and organize your imported data.
-	$map_data = glitter_merge_data($map_data, $map->call_api(get_option('glitter_map_api_resource')));
+	$map_data = glitter_merge_data($map_data, $map->call_api(get_option('glitter_map_api_resource'), true));
+	
+	pre_me($map_data,'map data pre-encoding');  // outputs the data to the screen.  Good for testing the output.
 	
 	// finally, save the file and update the 'last updated' timestamp.
 	$final_file = fopen(get_option('glitter_map_json_export_file'), 'w');
 	fwrite($final_file, json_encode($map_data));
 	fclose($final_file);
-	update_option('map_last_updated_at', date("Y-m-d H:i:s"));
+	
 	}
 }
 
